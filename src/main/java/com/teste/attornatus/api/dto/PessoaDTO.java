@@ -1,9 +1,12 @@
 package com.teste.attornatus.api.dto;
 
+import com.teste.attornatus.api.domain.Endereco;
 import com.teste.attornatus.api.domain.Pessoa;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PessoaDTO {
 
@@ -15,12 +18,20 @@ public class PessoaDTO {
     @PastOrPresent(message = "{campo.data.invalida}")
     private LocalDate dataNascimento;
 
+    private List<EnderecoDTO> enderecos;
+
     public PessoaDTO() {
     }
 
     public PessoaDTO(String nome, LocalDate dataNascimento) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
+    }
+
+    public PessoaDTO(String nome, LocalDate dataNascimento, List<EnderecoDTO> enderecos) {
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.enderecos = enderecos;
     }
 
     public String getNome() {
@@ -39,7 +50,27 @@ public class PessoaDTO {
         this.dataNascimento = dataNascimento;
     }
 
-    public static Pessoa convertToPessoa(PessoaDTO dto){
-        return new Pessoa(dto.getNome(), dto.getDataNascimento());
+    public List<EnderecoDTO> getEnderecos() {
+        return enderecos;
     }
+
+    public void setEnderecos(List<EnderecoDTO> enderecos) {
+        this.enderecos = enderecos;
+    }
+
+    public static Pessoa convertToPessoa(PessoaDTO dto){
+        return new Pessoa(dto.getNome(), dto.getDataNascimento(), PessoaDTO.convertToList(dto.getEnderecos()));
+    }
+
+
+
+    public static List<Endereco> convertToList(List<EnderecoDTO> enderecosDtos){
+        List<Endereco>lista = new ArrayList<>();
+        enderecosDtos.forEach(enderecoDTO -> {
+            lista.add(EnderecoDTO.convertTo(enderecoDTO));
+;        });
+        return lista;
+    }
+
+
 }

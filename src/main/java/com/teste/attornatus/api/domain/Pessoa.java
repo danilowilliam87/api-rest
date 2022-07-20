@@ -1,5 +1,8 @@
 package com.teste.attornatus.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.teste.attornatus.api.dto.EnderecoDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,10 +20,15 @@ public class Pessoa implements Serializable {
     @Column(name = "data_nascimento", nullable = false, length = 10)
     private LocalDate dataNascimento;
 
-    @OneToMany(mappedBy = "pessoa")
+    @JsonIgnore
+    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
     private List<Endereco> enderecos;
 
     public Pessoa() {
+    }
+
+    public Pessoa(Long id) {
+        this.id = id;
     }
 
     public Pessoa(String nome, LocalDate dataNascimento) {
@@ -30,6 +38,12 @@ public class Pessoa implements Serializable {
 
     public Pessoa(Long id, String nome, LocalDate dataNascimento, List<Endereco> enderecos) {
         this.id = id;
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
+        this.enderecos = enderecos;
+    }
+
+    public Pessoa(String nome, LocalDate dataNascimento, List<Endereco> enderecos) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.enderecos = enderecos;

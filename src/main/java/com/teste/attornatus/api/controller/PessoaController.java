@@ -1,16 +1,16 @@
 package com.teste.attornatus.api.controller;
 
+import com.teste.attornatus.api.domain.Endereco;
 import com.teste.attornatus.api.domain.Pessoa;
+import com.teste.attornatus.api.dto.EnderecoDTO;
 import com.teste.attornatus.api.dto.PessoaDTO;
+import com.teste.attornatus.api.service.EnderecoService;
 import com.teste.attornatus.api.service.PessoaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.lang.reflect.Method;
 import java.util.List;
 
 @RestController
@@ -19,6 +19,9 @@ public class PessoaController {
 
     @Autowired
     PessoaService service;
+
+    @Autowired
+    EnderecoService enderecoService;
 
     @RequestMapping(method = RequestMethod.POST)
     public Pessoa save(@RequestBody @Valid PessoaDTO pessoaDTO){
@@ -50,5 +53,24 @@ public class PessoaController {
        return service.findAll();
     }
 
+
+    @RequestMapping(value = "/enderecos", method = RequestMethod.POST)
+    public Endereco saveEndereco(@RequestBody  EnderecoDTO dto){
+        Pessoa pessoaProcurada = service.findById(dto.getPessoaId());
+        Endereco endereco = EnderecoDTO.convertTo(dto);
+        endereco.setPessoa(pessoaProcurada);
+        return enderecoService.save(endereco);
+    }
+
+    @RequestMapping(value = "/enderecos", method = RequestMethod.PUT)
+    public void updateIncrementalEndereco(@RequestParam(value = "enderecoId") Long idEndereco,
+                                          @RequestParam(value = "pessoaId") Long idPessoa){
+        enderecoService.updateIncrementalEndereco(idEndereco, idPessoa);
+    }
+
+    @RequestMapping(value = "/{id}/enderecos", method = RequestMethod.GET)
+    public List<Endereco> findAllEnderecos(@PathVariable(value = "id") Long idPessoa){
+        return enderecoService.findAllByPessoa(idPessoa);
+    }
 
 }

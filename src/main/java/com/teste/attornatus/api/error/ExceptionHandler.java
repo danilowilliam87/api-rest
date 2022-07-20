@@ -69,7 +69,17 @@ public class ExceptionHandler {
         return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(ServiceException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ApiErrorResponse> invalidOption(Exception exception, WebRequest webRequest){
+        ApiError apiError = new ApiError(String.valueOf(HttpStatus.NOT_FOUND),
+                exception.getMessage());
 
+        List<ApiError> list = new ArrayList<>();
+        list.add(apiError);
+
+        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
+    }
 
 
 }

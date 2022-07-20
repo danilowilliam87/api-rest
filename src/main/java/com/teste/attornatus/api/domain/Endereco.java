@@ -1,10 +1,13 @@
 package com.teste.attornatus.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "endereco")
-public class Endereco {
+public class Endereco implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,7 @@ public class Endereco {
     @Column(nullable = false, length = 60)
     private String cidade;
 
+    @JsonIgnore
     @ManyToOne
     private Pessoa pessoa;
 
@@ -26,7 +30,25 @@ public class Endereco {
     public Endereco() {
     }
 
+    public Endereco(Long id, String logradouro, String cep, Integer numero,
+                    String cidade, Pessoa pessoa, boolean principal) {
+        this.id = id;
+        this.logradouro = logradouro;
+        this.cep = cep;
+        this.numero = numero;
+        this.cidade = cidade;
+        this.pessoa = pessoa;
+        this.principal = principal;
+    }
 
+    public Endereco(String logradouro, String cep, Integer numero, String cidade, Pessoa pessoa, boolean principal) {
+        this.logradouro = logradouro;
+        this.cep = cep;
+        this.numero = numero;
+        this.cidade = cidade;
+        this.pessoa = pessoa;
+        this.principal = principal;
+    }
 
     public Long getId() {
         return id;
