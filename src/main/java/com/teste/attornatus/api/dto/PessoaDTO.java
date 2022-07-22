@@ -59,7 +59,7 @@ public class PessoaDTO {
     }
 
     public static Pessoa convertToPessoa(PessoaDTO dto){
-        return new Pessoa(dto.getNome(), dto.getDataNascimento(), PessoaDTO.convertToList(dto.getEnderecos()));
+        return new Pessoa(dto.getNome(), dto.getDataNascimento());
     }
 
 

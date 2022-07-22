@@ -1,8 +1,6 @@
 package com.teste.attornatus.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.teste.attornatus.api.dto.EnderecoDTO;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,13 +13,13 @@ public class Pessoa implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 60, unique = true)
     private String nome;
     @Column(name = "data_nascimento", nullable = false, length = 10)
     private LocalDate dataNascimento;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pessoa")
     private List<Endereco> enderecos;
 
     public Pessoa() {

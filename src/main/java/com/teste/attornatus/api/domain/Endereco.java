@@ -1,7 +1,6 @@
 package com.teste.attornatus.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -25,13 +24,14 @@ public class Endereco implements Serializable {
     @ManyToOne
     private Pessoa pessoa;
 
-    private boolean principal;
+    @Column(name = "endereco_principal", nullable = false, length = 3)
+    private String principal;
 
     public Endereco() {
     }
 
     public Endereco(Long id, String logradouro, String cep, Integer numero,
-                    String cidade, Pessoa pessoa, boolean principal) {
+                    String cidade, Pessoa pessoa, String principal) {
         this.id = id;
         this.logradouro = logradouro;
         this.cep = cep;
@@ -41,7 +41,8 @@ public class Endereco implements Serializable {
         this.principal = principal;
     }
 
-    public Endereco(String logradouro, String cep, Integer numero, String cidade, Pessoa pessoa, boolean principal) {
+    public Endereco(String logradouro, String cep, Integer numero,
+                    String cidade, Pessoa pessoa, String principal) {
         this.logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
@@ -90,11 +91,11 @@ public class Endereco implements Serializable {
         this.cidade = cidade;
     }
 
-    public boolean isPrincipal() {
+    public String getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(boolean principal) {
+    public void setPrincipal(String principal) {
         this.principal = principal;
     }
 

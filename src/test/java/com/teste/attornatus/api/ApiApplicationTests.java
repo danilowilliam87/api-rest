@@ -16,9 +16,6 @@ class ApiApplicationTests {
 	@Autowired
 	PessoaRepository repository;
 
-	@Test
-	void contextLoads() {
-	}
 
 
 

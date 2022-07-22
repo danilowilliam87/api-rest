@@ -1,150 +1,142 @@
 package com.teste.attornatus.api.exception;
 
 
-import com.teste.attornatus.api.exception.ResourceNotFoundException;
+import com.teste.attornatus.api.error.ApiError;
+import com.teste.attornatus.api.error.ArgumentInvalidError;
+import com.teste.attornatus.api.error.FieldValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class ExceptionHandler {
+public class ControllerExceptionHandler {
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiError> resourceNotFound(ResourceNotFoundException e,HttpServletRequest request){
 
-    /*
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrorResponse invalidArgument(MethodArgumentNotValidException exception){
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.NOT_FOUND.value())
+                .setError("Resource not found ")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
 
-        List<ApiError> apiErrorList = exception
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiError> requestParameterException(MissingServletRequestParameterException e, HttpServletRequest request){
+
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.NOT_FOUND.value())
+                .setError("Bad Request")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ArgumentInvalidError> argumentInvalidException(MethodArgumentNotValidException exception,
+                                                                         HttpServletRequest request){
+
+        List<FieldValidationError> fieldValidationErrors = exception
                 .getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(e -> new ApiError(e.getCode(), e.getDefaultMessage()))
-                .collect(Collectors.toList());
+                .map(ex ->{
+                    return  new FieldValidationError()
+                            .setField(ex.getField())
+                            .setMessage(ex.getDefaultMessage())
+                            .setValue(String.valueOf(ex.getRejectedValue()));
+                }).collect(Collectors.toList());
 
-        return new ApiErrorResponse(apiErrorList);
+
+
+        ApiError apiError = new ApiError();
+        apiError.setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.BAD_REQUEST.value())
+                .setError("argument invalid")
+                .setMessage("Validation failed for argument")
+                .setPath(request.getRequestURI());
+
+        ArgumentInvalidError argumentInvalidError = new ArgumentInvalidError();
+        argumentInvalidError.setApiError(apiError);
+        argumentInvalidError.setFieldValidationErrors(fieldValidationErrors);
+
+
+        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(argumentInvalidError);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiErrorResponse> objectNotFound(Exception exception, WebRequest webRequest){
-       ApiError apiError = new ApiError(String.valueOf(HttpStatus.NOT_FOUND),
-               exception.getMessage());
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiError> resourceNotFound(HttpRequestMethodNotSupportedException e,HttpServletRequest request){
 
-       List<ApiError> list = new ArrayList<>();
-       list.add(apiError);
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.METHOD_NOT_ALLOWED.value())
+                .setError("Method Not Allowed ")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
 
-       return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(apiError);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ApiErrorResponse> uriException(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.BAD_REQUEST),
-                "nao existe recurso que atenda a uri informada : "
-                        + webRequest.getDescription(false));
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiError> typeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request){
 
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.NOT_FOUND.value())
+                .setError("failed to convert ")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
 
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiErrorResponse> parameterNotInformed(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.BAD_REQUEST),
-                "nao existe recurso que atenda a uri informada : "
-                        + webRequest.getDescription(false));
+    @ExceptionHandler(ResultUniqueException.class)
+    public ResponseEntity<ApiError> resultUniqueException(ResultUniqueException e,HttpServletRequest request){
 
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.BAD_REQUEST.value())
+                .setError("unique constraint violation")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
 
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(ServiceException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ApiErrorResponse> invalidOption(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.NOT_FOUND),
-                exception.getMessage());
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiError> resultUniqueException(HttpMessageNotReadableException e,HttpServletRequest request){
 
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
+        ApiError apiError = new ApiError()
+                .setTimeStamp(Instant.now())
+                .setStatus(HttpStatus.BAD_REQUEST.value())
+                .setError("\"Required request body is missing")
+                .setMessage(e.getMessage())
+                .setPath(request.getRequestURI());
 
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
-    }
-
-    //HttpMessageNotReadableException - erro para tratar
-    @org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiErrorResponse> httpMethodErrord(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.BAD_REQUEST),
-                "nao existe recurso que atenda a uri informada : "
-                        + webRequest.getDescription(false));
-
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
-
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
-    }
-
-    @org.springframework.web.bind.annotation.ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiErrorResponse> methodNotSuported(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.BAD_REQUEST),
-                "nao existe recurso que atenda a uri informada : "
-                        + webRequest.getDescription(false));
-
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
-
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
 
-
-
-    @org.springframework.web.bind.annotation.ExceptionHandler(ServletException.class)
-    public ResponseEntity<ApiErrorResponse> httpErrors(ServletException exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(
-                "nao existe recurso que atenda a uri informada : "
-                        + webRequest.getDescription(false));
-
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
-
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.BAD_REQUEST);
-    }
-
-
-
-    @org.springframework.web.bind.annotation.ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ApiErrorResponse> objectNotFound(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(webRequest.getDescription(true),
-                exception.getMessage());
-
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
-
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
-    }
-
-
-    @org.springframework.web.bind.annotation.ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiErrorResponse> runtimeError(Exception exception, WebRequest webRequest){
-        ApiError apiError = new ApiError(String.valueOf(HttpStatus.NOT_FOUND),
-                exception.getLocalizedMessage());
-
-        List<ApiError> list = new ArrayList<>();
-        list.add(apiError);
-
-        return new ResponseEntity<>(new ApiErrorResponse(list),HttpStatus.NOT_FOUND);
-    }
-
-    */
-
-
+    //HttpRequestMethodNotSupportedException
+    //MissingServletRequestParameterException
+    //(MethodArgumentNotValidException
+    //MethodArgumentTypeMismatchException
+    //HttpMessageNotReadableException
 
 }

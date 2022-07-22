@@ -1,42 +1,61 @@
 package com.teste.attornatus.api.error;
 
-public class ApiError {
-
-    private String status;
-    private String message;
+import java.io.Serializable;
+import java.time.Instant;
 
 
+public class ApiError implements Serializable {
+
+   private Instant timestamp;
+   private Integer status;
+   private String error;
+   private String message;
+   private String path;
 
 
-    public ApiError() {
+
+    public ApiError setTimeStamp(Instant timeStamp){
+        this.timestamp = timeStamp;
+        return this;
     }
 
-    public ApiError(String message) {
-        this.message = message;
-    }
-
-    public ApiError(String status, String message) {
+    public ApiError setStatus(Integer status){
         this.status = status;
-        this.message = message;
+        return this;
     }
 
+    public ApiError setError(String error){
+        this.error = error;
+        return this;
+    }
 
+    public ApiError setMessage(String message){
+        this.message = message;
+        return this;
+    }
 
-    public String getStatus() {
+    public ApiError setPath(String path){
+        this.path = path;
+        return this;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public String getError() {
+        return error;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getPath() {
+        return path;
     }
-
-
 }

@@ -2,21 +2,40 @@ package com.teste.attornatus.api.dto;
 
 import com.teste.attornatus.api.domain.Endereco;
 import com.teste.attornatus.api.domain.Pessoa;
+import com.teste.attornatus.api.enuns.EnderecoPrincipal;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class EnderecoDTO {
 
+    @NotEmpty(message = "{campo.logradouro.vazio}")
+    @NotBlank(message = "{campo.logradouro.obrigatorio}")
     private String logradouro;
+
+    @NotEmpty(message = "{campo.cep.vazio}")
+    @NotBlank(message = "{campo.cep.obrigatorio}")
     private String cep;
+
+    @NotNull(message = "{campo.vazio.obrigatorio}")
     private Integer numero;
+    @NotEmpty(message = "{campo.cidade.vazio}")
+    @NotBlank(message = "{campo.cidade.obrigatorio}")
     private String cidade;
-    private boolean principal;
+
+
+   @NotNull(message = "{campo.principal.obrigatorio}")
+    private EnderecoPrincipal principal;
+
+    @NotNull(message = "{campo.pessoaId.obrigatorio}")
     private Long pessoaId;
 
     public EnderecoDTO() {
     }
 
     public EnderecoDTO(String logradouro, String cep, Integer numero,
-                       String cidade, boolean principal, Long pessoaId) {
+                       String cidade, EnderecoPrincipal principal, Long pessoaId) {
         this.logradouro = logradouro;
         this.cep = cep;
         this.numero = numero;
@@ -27,7 +46,7 @@ public class EnderecoDTO {
 
     public static Endereco convertTo(EnderecoDTO dto) {
         return new Endereco(dto.getLogradouro(), dto.getCep(), dto.getNumero(), dto.getCidade(),
-                new Pessoa(dto.getPessoaId()), dto.isPrincipal());
+                new Pessoa(dto.getPessoaId()), String.valueOf(dto.getPrincipal().getStatus()));
     }
 
     public String getLogradouro() {
@@ -62,11 +81,11 @@ public class EnderecoDTO {
         this.cidade = cidade;
     }
 
-    public boolean isPrincipal() {
+    public EnderecoPrincipal getPrincipal() {
         return principal;
     }
 
-    public void setPrincipal(boolean principal) {
+    public void setPrincipal(EnderecoPrincipal principal) {
         this.principal = principal;
     }
 

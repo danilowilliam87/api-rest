@@ -1,4 +1,4 @@
-package com.teste.attornatus.api.error;
+package com.teste.attornatus.api.exception;
 
 import javax.servlet.ServletException;
 

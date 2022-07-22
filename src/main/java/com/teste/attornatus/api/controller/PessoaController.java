@@ -23,52 +23,52 @@ public class PessoaController {
     @Autowired
     EnderecoService enderecoService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public Pessoa save(@RequestBody @Valid PessoaDTO pessoaDTO){
         return service.save(PessoaDTO.convertToPessoa(pessoaDTO));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @GetMapping(value = "/{id}")
     public Pessoa findById(@PathVariable  Long id){
         return service.findById(id);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public Pessoa findByNome(@RequestParam(value = "nome") String nome){
         return service.findByNome(nome);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/{id}")
+    @PutMapping(value = "/{id}")
     public Pessoa updateFull(@PathVariable Long id, @RequestBody @Valid PessoaDTO pessoaDTO){
         return service.updateFull(id, PessoaDTO.convertToPessoa(pessoaDTO));
     }
 
-    @RequestMapping(method = RequestMethod.PATCH, value = "/{id}")
-    public Pessoa updateIncremental(@PathVariable Long id, @RequestBody @Valid Pessoa pessoa){
-        return service.updateIncremental(id, pessoa);
+    @PatchMapping(value = "/{id}")
+    public Pessoa updateIncremental(@PathVariable Long id, @RequestBody  PessoaDTO pessoaDTO){
+        return service.updateIncremental(id, PessoaDTO.convertToPessoa(pessoaDTO));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/all")
+    @GetMapping(value = "/all")
     public List<Pessoa> findAll(){
        return service.findAll();
     }
 
 
-    @RequestMapping(value = "/enderecos", method = RequestMethod.POST)
-    public Endereco saveEndereco(@RequestBody  EnderecoDTO dto){
+    @PostMapping(value = "/enderecos")
+    public Endereco saveEndereco(@RequestBody  @Valid EnderecoDTO dto){
         Pessoa pessoaProcurada = service.findById(dto.getPessoaId());
         Endereco endereco = EnderecoDTO.convertTo(dto);
         endereco.setPessoa(pessoaProcurada);
         return enderecoService.save(endereco);
     }
 
-    @RequestMapping(value = "/enderecos", method = RequestMethod.PUT)
+    @PutMapping(value = "/enderecos")
     public void updateIncrementalEndereco(@RequestParam(value = "enderecoId") Long idEndereco,
                                           @RequestParam(value = "pessoaId") Long idPessoa){
         enderecoService.updateIncrementalEndereco(idEndereco, idPessoa);
     }
 
-    @RequestMapping(value = "/{id}/enderecos", method = RequestMethod.GET)
+    @GetMapping(value = "/{id}/enderecos")
     public List<Endereco> findAllEnderecos(@PathVariable(value = "id") Long idPessoa){
         return enderecoService.findAllByPessoa(idPessoa);
     }
