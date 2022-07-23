@@ -4,6 +4,9 @@ package com.teste.attornatus.api.exception;
 import com.teste.attornatus.api.error.ApiError;
 import com.teste.attornatus.api.error.ArgumentInvalidError;
 import com.teste.attornatus.api.error.FieldValidationError;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 public class ControllerExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
+    @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> resourceNotFound(ResourceNotFoundException e,HttpServletRequest request){
 
         ApiError apiError = new ApiError()
@@ -36,6 +41,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> requestParameterException(MissingServletRequestParameterException e, HttpServletRequest request){
 
         ApiError apiError = new ApiError()
@@ -49,6 +56,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ArgumentInvalidError.class)))
     public ResponseEntity<ArgumentInvalidError> argumentInvalidException(MethodArgumentNotValidException exception,
                                                                          HttpServletRequest request){
 
@@ -81,6 +90,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ApiResponse(responseCode = "405", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> resourceNotFound(HttpRequestMethodNotSupportedException e,HttpServletRequest request){
 
         ApiError apiError = new ApiError()
@@ -94,6 +105,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> typeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request){
 
         ApiError apiError = new ApiError()
@@ -107,6 +120,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(ResultUniqueException.class)
+    @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> resultUniqueException(ResultUniqueException e,HttpServletRequest request){
 
         ApiError apiError = new ApiError()
@@ -120,6 +135,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ApiResponse(responseCode = "400", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = ApiError.class)))
     public ResponseEntity<ApiError> resultUniqueException(HttpMessageNotReadableException e,HttpServletRequest request){
 
         ApiError apiError = new ApiError()

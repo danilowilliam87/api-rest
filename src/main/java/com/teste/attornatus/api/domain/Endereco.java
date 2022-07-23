@@ -1,6 +1,8 @@
 package com.teste.attornatus.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,13 +13,16 @@ public class Endereco implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 100)
+    @Schema(description = "logradouro")
     private String logradouro;
     @Column(nullable = false, length = 9)
+    @Schema(description = "cep")
     private String cep;
     @Column(nullable = false)
     private Integer numero;
-    @Column(nullable = false, length = 60)
+    @Column(nullable = false, length = 100)
+    @Schema(description = "cidade")
     private String cidade;
 
     @JsonIgnore
@@ -25,6 +30,7 @@ public class Endereco implements Serializable {
     private Pessoa pessoa;
 
     @Column(name = "endereco_principal", nullable = false, length = 3)
+    @Schema(description = "campo que define se o endereço é o principal ou não")
     private String principal;
 
     public Endereco() {

@@ -1,20 +1,30 @@
 package com.teste.attornatus.api.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
+
 @Entity(name = "pessoa")
 public class Pessoa implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false, length = 60, unique = true)
+
+    @Schema(description = "nome da pessoa")
+    @Column(nullable = false, length = 80, unique = true)
     private String nome;
+
+
+    @Schema(description = "data de nascimento")
     @Column(name = "data_nascimento", nullable = false, length = 10)
     private LocalDate dataNascimento;
 

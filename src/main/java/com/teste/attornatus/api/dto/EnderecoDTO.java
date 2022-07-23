@@ -3,31 +3,44 @@ package com.teste.attornatus.api.dto;
 import com.teste.attornatus.api.domain.Endereco;
 import com.teste.attornatus.api.domain.Pessoa;
 import com.teste.attornatus.api.enuns.EnderecoPrincipal;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+@Schema(description = "Representa um endereço no sistema")
 public class EnderecoDTO {
 
+    @Schema(description = "logradouro")
     @NotEmpty(message = "{campo.logradouro.vazio}")
     @NotBlank(message = "{campo.logradouro.obrigatorio}")
+    @Size(min = 10, max = 100)
     private String logradouro;
 
+    @Schema(description = "cep")
     @NotEmpty(message = "{campo.cep.vazio}")
     @NotBlank(message = "{campo.cep.obrigatorio}")
+    @Size(min = 9, max = 9)
     private String cep;
 
+    @Schema(description = "numero")
     @NotNull(message = "{campo.vazio.obrigatorio}")
     private Integer numero;
+
+    @Schema(description = "cidade")
     @NotEmpty(message = "{campo.cidade.vazio}")
     @NotBlank(message = "{campo.cidade.obrigatorio}")
+    @Size(min = 4, max = 100)
     private String cidade;
 
 
+    @Schema(description = "campo que define se o endereço é o principal")
    @NotNull(message = "{campo.principal.obrigatorio}")
-    private EnderecoPrincipal principal;
+   private EnderecoPrincipal principal;
 
+    @Schema(description = "id da pessoa que pertencerá o endereço")
     @NotNull(message = "{campo.pessoaId.obrigatorio}")
     private Long pessoaId;
 

@@ -2,18 +2,23 @@ package com.teste.attornatus.api.dto;
 
 import com.teste.attornatus.api.domain.Endereco;
 import com.teste.attornatus.api.domain.Pessoa;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema(description = "Representa uma Pessoa no sistema")
 public class PessoaDTO {
 
+    @Schema(description = "nome da pessoa")
     @NotNull(message = "{campo.nome.nulo}")
     @NotEmpty(message = "{campo.nome.obrigatorio}")
+    @Size(min = 4, max = 60)
     private String nome;
 
+    @Schema(description = "data de nascimento")
     @NotNull(message = "{campo.data_nascimento.nulo}")
     @PastOrPresent(message = "{campo.data.invalida}")
     private LocalDate dataNascimento;
