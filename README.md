@@ -12,7 +12,8 @@ Tecnologias :
 - Banco de dados H2
 - Spring Data
 
-Para ver a documetação, execute e o projeto e acesse o link abaixo
+Para ver a documetação, execute e o projeto e acesse o link abaixo.
+
 Link para Documentação  : http://localhost:8080/swagger-ui/index.htm
 
 Teste Unitários e de Integração
