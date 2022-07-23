@@ -46,7 +46,7 @@ public class PessoaService {
 
     public Pessoa updateIncremental(Long id, Pessoa pessoa){
         Pessoa pessoaEncontrada = findById(id);
-        pessoaEncontrada.setNome(pessoa.getNome().trim().length() == 0 ? pessoaEncontrada.getNome() : pessoa.getNome());
+        pessoaEncontrada.setNome(pessoa.getNome() == null || pessoa.getNome().trim().length() == 0   ? pessoaEncontrada.getNome() : pessoa.getNome());
         pessoaEncontrada.setDataNascimento(Optional.ofNullable(pessoa.getDataNascimento()).orElse(pessoaEncontrada.getDataNascimento()));
         return repository.save(pessoaEncontrada);
     }
