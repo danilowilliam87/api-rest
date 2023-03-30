@@ -30,16 +30,16 @@ public class EnderecoService {
 
     public Endereco save(Endereco endereco){
         validateObject(endereco);
-        String sim = "SIM";
-        String nao = "NAO";
         List<Endereco> lista = repository.findAllByIdPessoa(endereco.getPessoa().getId());
         if(lista.isEmpty() && endereco.getPrincipal().equals("NAO")){
             endereco.setPrincipal(sim);
         }
         if(!lista.isEmpty() && endereco.getPrincipal().equals("SIM")){
             lista.forEach(l ->{
-                l.setPrincipal(nao);
-                repository.save(l);
+               if(sim.equals(l.getPrincipal())){
+                   l.setPrincipal(nao);
+                   repository.save(l);
+               }
             });
         }
         return repository.save(endereco);
